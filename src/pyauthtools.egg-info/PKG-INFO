@@ -1,7 +1,7 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.2
 Name: pyauthtools
-Version: 0.0.11
-Summary: Some simple tools for authorization in web apps
+Version: 0.1.8
+Summary: Some auth tools using in python flask.
 Author-email: lidaning <453882101@qq.com>
 Project-URL: Homepage, https://github.com/relidaning/pyauthtools
 Project-URL: Bug Tracker, https://github.com/relidaning/pyauthtools/issues
@@ -13,6 +13,8 @@ License-File: License
 
 # PyAuthTools
 
+Some auth tools using in python flask.
+
 ## Surpported Algorisms
 HS256
 
@@ -20,8 +22,15 @@ RS256
 
 
 ## Install
-```python
+```pip
 pip install pyauthtools
+```
+
+## Environments
+```env
+JWT_ALG = 'HS256'   # or 'RS256'
+JWT_PUBLIC = b'xxx' # when RS256
+JWT_SECRET = b'xxx' # pri_key or secret
 ```
 
 ## Usages

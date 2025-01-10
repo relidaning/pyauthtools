@@ -1,6 +1,6 @@
 import jwt
 from datetime import datetime, timedelta
-from flask import request, abort, render_template, Flask
+from flask import request, abort, render_template, Flask, redirect, make_response, session, url_for
 import os
 from dotenv import load_dotenv
 
@@ -9,6 +9,7 @@ load_dotenv()
 JWT_ALG = 'HS256' if not os.getenv('JWT_ALG') else os.getenv('JWT_ALG')
 JWT_PUBLIC = os.getenv('JWT_PUBLIC')
 JWT_SECRET = os.getenv('JWT_SECRET')
+JWT_AUTH_SERVICE = os.getenv('JWT_AUTH_SERVICE')
 
 
 def encode(payload):
@@ -39,18 +40,20 @@ def decode(token):
 def auth(func):
   def validate_auth(*args, **kwargs):
     try:
-      token = request.headers.get('Authorization').split(' ')[1]
-      if JWT_ALG == 'HS256':
-        secret = JWT_SECRET
-      elif JWT_ALG == 'RS256':
-        secret = JWT_PUBLIC
+      url = request.url
+      headers = request.headers
+      token = request.args['auth']
+      if not token:
+        print(f'pyauthtools.auth, url: {url}, headers: {headers}')
+        token = headers.get('Authorization').split(' ')[1]
       result = decode(token)
       if result == 'err':
-        return render_template('login.html')
+        return redirect(f'http://{JWT_AUTH_SERVICE}/login?url={url}')
       return func(*args, **kwargs)
     except Exception as e:
-      return render_template('login.html')
+      return redirect(f'http://{JWT_AUTH_SERVICE}/login?url={url}')
   return validate_auth
+  
   
   
 # secret = 'a2c4e6f8'
